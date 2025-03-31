@@ -18,7 +18,6 @@ def get_page(url: str) -> BeautifulSoup:
     return BeautifulSoup(response.text, "html.parser")
 
 
-# Function to parse quotes from a page
 def parse_quotes(page: BeautifulSoup) -> List[Quote]:
     quotes = []
     for quote_div in page.find_all("div", class_="quote"):
@@ -32,16 +31,14 @@ def parse_quotes(page: BeautifulSoup) -> List[Quote]:
     return quotes
 
 
-# Function to write the list of quotes to a CSV file
 def write_to_csv(quotes: List[Quote], output_csv_path: str) -> None:
     with open(output_csv_path, mode="w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
-        writer.writerow(["Text", "Author", "Tags"])  # Write header
+        writer.writerow(["text", "author", "tags"])
         for quote in quotes:
-            writer.writerow([quote.text, quote.author, ", ".join(quote.tags)])
+            writer.writerow([quote.text, quote.author, str(quote.tags)])
 
 
-# Main function to scrape all pages and save quotes to a CSV
 def main(output_csv_path: str) -> None:
     base_url = "https://quotes.toscrape.com/page/{}/"
     page_number = 1
@@ -53,7 +50,7 @@ def main(output_csv_path: str) -> None:
         quotes = parse_quotes(page)
 
         if not quotes:
-            break  # Stop if no quotes found on the page (end of pagination)
+            break
 
         all_quotes.extend(quotes)
         page_number += 1
